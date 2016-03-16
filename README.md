@@ -60,7 +60,7 @@ if(in_array($theme, $allowedThemes) && file_exists($theme)){
 - include
 - include_once
 
-##1) Local File Inclusion
+##2) Local File Inclusion
 ######Basic examples
 
 test.php

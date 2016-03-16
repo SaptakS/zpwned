@@ -13,19 +13,19 @@
 ######Basic examples
 
 		test.php
-		```php
+```php
 		 <?php
 		 	$theme = $_GET['theme'];
 		 	include $theme;
 		 ?>
-		 ```
+```
 		 test1.php
-		 ```php
+```php
 		 <?php
          	$theme = $_GET['theme'];
          	include $theme.'.php';
          ?>
-		 ```
+```
 ######Attack
 		
 

@@ -12,19 +12,19 @@
 ##1) Remote File Inclusion
 ######Basic examples
 
-		test.php
+test.php
 ```php
-		 <?php
-		 	$theme = $_GET['theme'];
-		 	include $theme;
-		 ?>
+<?php
+$theme = $_GET['theme'];
+include $theme;
+?>
 ```
-		 test1.php
+test1.php
 ```php
-		 <?php
-         	$theme = $_GET['theme'];
-         	include $theme.'.php';
-         ?>
+<?php
+$theme = $_GET['theme'];
+include $theme.'.php';
+?>
 ```
 ######Attack
 		

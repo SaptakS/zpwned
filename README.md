@@ -12,7 +12,7 @@
 10. SQL Injection
 
 ##1) Remote File Inclusion
-####Basic examples
+####Vulnerable Codes
 
 test.php
 ```php
@@ -63,7 +63,7 @@ if(in_array($theme, $allowedThemes) && file_exists($theme)){
 - include_once
 
 ##2) Local File Inclusion
-####Basic examples
+####Vulnerable Codes
 
 test.php
 ```php
@@ -113,7 +113,7 @@ if(in_array($theme, $allowedThemes) && file_exists($theme)){
 - include_once
 
 ##3) Local File Disclosure/Download
-####Basic example
+####Vulnerable Code
 
 download_invoice.php
 ```php
@@ -163,7 +163,7 @@ die();
 - readlink
 
 ##4) Remote File Upload
-####Basic examples
+####Vulnerable Codes
 
 upload_profile_picture.php
 ```php
@@ -226,7 +226,7 @@ echo "picture uploaded successfully";
 - fwrite
 
 ##5) Remote Command Execution
-####Basic example
+####Vulnerable Code
 
 upload_picture.php
 ```php
@@ -266,3 +266,6 @@ if (!file_exists($path)){
 - popen
 - proc_open
 - pcntl_exec
+
+##6) Remote Code Execution
+####Vulnerable Codes

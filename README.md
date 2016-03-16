@@ -224,3 +224,19 @@ echo "picture uploaded successfully";
 - move_uploaded_file
 - file_put_contents
 - fwrite
+
+##5) Remote Command Execution
+####Basic example
+
+upload_picture.php
+```php
+<?php
+$user_id = $_GET['user_id'];
+$path = dirname(__FILE__).'/'.$user_id;
+if (!file_exists($path)){
+	system('mkdir '.$path);
+}
+// upload picture
+?>
+```
+####Attack

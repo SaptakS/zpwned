@@ -36,6 +36,7 @@ include $theme.'.php';
 	- http://localhost/rfi/index.php?theme=php://filter/convert.base64-encode/resource=index.php
 - Using data URIs:
 	- http://localhost/rfi/index.php?theme=data://text/plain;base64,SSBsb3ZlIFBIUAo=
+	
 ######How to fix
 - set `allow_url_include = Off` in php.ini
 - Validate with array of allowed files

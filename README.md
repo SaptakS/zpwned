@@ -161,3 +161,66 @@ die();
 - SplFileObject
 - file_get_contents
 - readlink
+
+##4) Remote File Upload
+####Basic examples
+
+upload_profile_picture.php
+```php
+<?php
+$filename = $_FILES['picture']['name'];
+$folder = dirname(__FILE__).'/pictures/';
+if(!move_uploaded_file($_FILES['picture']['tmp_name'], $folder.$filename)){
+	echo "picture not uploaded";
+	die();
+}
+echo "picture uploaded successfully";
+?>
+```
+upload_profile_picture_with_type_check.php
+```php
+<?php
+$size = getimagesize($_FILES['picture']['tmp_name']);
+if (!$size) {
+	echo 'Upload Image file :p';
+	die();
+}
+$filename = $_FILES['picture']['name'];
+$folder = dirname(__FILE__).'/pictures/';
+if(!move_uploaded_file($_FILES['picture']['tmp_name'], $folder.$filename)){
+	echo "picture not uploaded";
+	die();
+}
+echo "picture uploaded successfully";
+?>
+```
+####Attack
+- Upload PHP file/Script File
+- Upload Image file with php code in EXIF data and file extenstion is php
+
+####How to fix
+- Validate file type and remove default file extension and remove whitespaces in the file name
+- Generate random file name
+- Store uploaded files in different path not '/var/www/'
+
+upload_profile_picture_fixed.php
+```php
+<?php
+$size = getimagesize($_FILES['picture']['tmp_name']);
+if (!$size) {
+	echo 'Upload Image file :p';
+	die();
+}
+$filename = trim(pathinfo($_FILES['picture']['name'])['filename']);
+$folder = dirname(__FILE__).'/pictures/';
+if(!move_uploaded_file($_FILES['picture']['tmp_name'], $folder.$filename.'.jpg')){
+	echo "picture not uploaded";
+	die();
+}
+echo "picture uploaded successfully";
+?>
+```
+####Affected PHP Functions
+- move_uploaded_file
+- file_put_contents
+- fwrite

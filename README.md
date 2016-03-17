@@ -347,3 +347,13 @@ $callback($arguments);
 - Don't allow any special character like "(",")","``"&";" etc
 - Never create ($$, extract & parse_str()) dynamic variables from $_POST, $_GET or $_REQUEST
 - Validate callback with array of allowed callback
+
+##7) Authentication Bypass/Insecure Permissions
+####Vulnerable Scenario
+- Validation of user permissions in View Page & missing user validation in handler page
+
+####Attack
+- http://localhost/auth/handler.php?user_id=1&type=delete_user
+
+####How to fix
+- add proper user validation

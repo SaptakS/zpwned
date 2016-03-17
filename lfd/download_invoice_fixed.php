@@ -1,5 +1,5 @@
 <?php
-$invoice = dirname(__FILE__).'/invoices/'.basename($_REQUEST['invoice']);
+$invoice = dirname(__FILE__).'/invoices/'.pathinfo($_REQUEST['invoice'])['filename'].'csv';
 if (!file_exists($invoice)) {
 	echo "File not found :(";
 	die();

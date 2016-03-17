@@ -152,7 +152,7 @@ die();
 download_invoice_fixed.php
 ```php
 <?php
-$invoice = dirname(__FILE__).'invoices/'.basename($_REQUEST['invoice']);
+$invoice = dirname(__FILE__).'invoices/'.pathinfo($_REQUEST['invoice'])['filename'].'csv';
 header("Pragma: public");
 header("Expires: 0");
 header("Cache-Control: must-revalidate, post-check=0, pre-check=0");

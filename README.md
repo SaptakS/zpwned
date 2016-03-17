@@ -12,6 +12,12 @@
 10. SQL Injection
 
 ##1) Remote File Inclusion
+####Affected PHP Functions
+- require
+- require_once
+- include
+- include_once
+
 ####Vulnerable Codes
 
 test.php
@@ -56,13 +62,14 @@ if(in_array($theme, $allowedThemes) && file_exists($theme)){
 }
 ?>
 ```
+
+##2) Local File Inclusion
 ####Affected PHP Functions
 - require
 - require_once
 - include
 - include_once
 
-##2) Local File Inclusion
 ####Vulnerable Codes
 
 test.php
@@ -106,13 +113,16 @@ if(in_array($theme, $allowedThemes) && file_exists($theme)){
 }
 ?>
 ```
-####Affected PHP Functions
-- require
-- require_once
-- include
-- include_once
 
 ##3) Local File Disclosure/Download
+####Affected PHP Functions
+- readfile
+- bzopen
+- fopen
+- SplFileObject
+- file_get_contents
+- readlink
+
 ####Vulnerable Code
 
 download_invoice.php
@@ -154,15 +164,13 @@ header( "Content-Disposition: attachment; filename=".basename($invoice));
 die();
 ?>
 ```
-####Affected PHP Functions
-- readfile
-- bzopen
-- fopen
-- SplFileObject
-- file_get_contents
-- readlink
 
 ##4) Remote File Upload
+####Affected PHP Functions
+- move_uploaded_file
+- file_put_contents
+- fwrite
+
 ####Vulnerable Codes
 
 upload_profile_picture.php
@@ -220,12 +228,18 @@ if(!move_uploaded_file($_FILES['picture']['tmp_name'], $folder.$filename.'.jpg')
 echo "picture uploaded successfully";
 ?>
 ```
-####Affected PHP Functions
-- move_uploaded_file
-- file_put_contents
-- fwrite
 
 ##5) Remote Command Execution
+####Affected PHP Functions
+- exec
+- passthru
+- system
+- shell_exec
+- `` (backticks)
+- popen
+- proc_open
+- pcntl_exec
+
 ####Vulnerable Code
 
 upload_picture.php
@@ -257,15 +271,79 @@ if (!file_exists($path)){
 // upload picture
 ?>
 ```
-####Affected PHP Functions
-- exec
-- passthru
-- system
-- shell_exec
-- `` (backticks)
-- popen
-- proc_open
-- pcntl_exec
 
 ##6) Remote Code Execution
+####Affected PHP Functions
+- eval
+- assert
+- preg_replace // with /e in regex
+- create_function
+- $$, extract & parse_str with one parameter
+- dynamic function
+- ReflectionFunction
+- unserialize
+- functions with callbacks for example (array_map, usort, ob_start & preg_replace_callback etc)
+
 ####Vulnerable Codes
+#####Evaluating eval()
+eval.php
+```php
+<?php
+$title = $_GET['title'];
+eval('echo Welcome '.$title.';');
+// assert() also vulnerable
+?>
+```
+######Regular Expression
+to_upper.php
+```php
+<?php
+$string = $_GET['string'];
+print preg_replace('/(.*)/e', 'strtoupper("\\1")', $string);
+?>
+```
+#####Dynamic Variables
+```php
+<?php
+foreach ($_GET as $key => $value) {
+	$$key = $value;
+}
+//extract($_GET);
+//parse_str($_GET);
+
+function isLoggedIn(){
+	return $_SESSION['isLoggedIn'];
+}
+if (isLoggedIn()) {
+	echo "You are logged in :)";
+}
+else{
+	echo "you are not logged in :(";
+	die();
+}
+?>
+```
+#####Dynamic Functions
+callback.php
+```php
+<?php
+$callback = $_GET['callback'];
+$arguments = $_GET['arguments'];
+function callback($args){
+	echo 'function called with arguments';
+}
+$callback($arguments);
+//$func = new ReflectionFunction($callback); $func->invoke($arguments); also same
+// create_function also vulnerable // create_function('$foobar', "echo $foobar;");
+?>
+```
+####Attack
+- http://localhost/rce/to_upper.php?string=phpinfo()
+- http://localhost/rce/display_title.php?title=vinoth;phpinfo();
+- http://localhost/rce/user.php?_SESSION[isLoggedIn]=true
+- http://localhost/rce/callback.php?callback=phpinfo&arguments=1
+
+####How to fix
+- Don't allow any special character like "(",")","``"&";" etc
+- Never create ($$, extract & parse_str()) dynamic variables from $_POST, $_GET or $_REQUEST
+- Validate callback with array of allowed callback

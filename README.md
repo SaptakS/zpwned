@@ -9,7 +9,6 @@
 7. Authentication Bypass/Insecure Permissions
 8. Cross-Site Scripting(XSS)
 9. Cross Site Request Forgery(CSRF)
-10. SQL Injection
 
 ##1) Remote File Inclusion
 ####Affected PHP Functions
@@ -351,9 +350,51 @@ $callback($arguments);
 ##7) Authentication Bypass/Insecure Permissions
 ####Vulnerable Scenario
 - Validation of user permissions in View Page & missing user validation in handler page
+- Improper validation of id parameter
 
 ####Attack
 - http://localhost/auth/handler.php?user_id=1&type=delete_user
 
 ####How to fix
 - add proper user validation
+
+##8) Cross-Site Scripting(XSS)
+####Affected PHP Functions
+- print
+- echo
+- printf
+- sprintf
+- var_dump
+- print_r
+
+####Vulnerable Code
+search.php
+```php
+<?php
+$query = $_GET['q'];
+$user_id = $_GET['user_id'];
+echo "You searched for ".$query;
+?>
+<script type="text/javascript">
+var user = '<?php echo $user_id?>';
+</script>
+```
+####Attack
+- http://localhost/xss/search.php?user_id=1&q=<script>alert(1)</script>
+- http://localhost/xss/search.php?user_id=1%27;alert(1);//&q=test
+
+####How to fix
+- filter user inputs 
+- use htmlspecialchars,htmlentities,strip_tags,filter_var & is_numeric
+
+search_fixed.php
+```php
+<?php
+$query = htmlspecialchars($_GET['q'], ENT_QUOTES, 'UTF-8');
+$user_id = $_GET['user_id'];
+echo "You searched for ".$query;
+?>
+<script type="text/javascript">
+var user = '<?php echo filter_var($user_id, FILTER_VALIDATE_INT)?>';
+</script>
+```

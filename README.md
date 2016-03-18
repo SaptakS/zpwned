@@ -9,6 +9,7 @@
 7. Authentication Bypass/Insecure Permissions
 8. Cross-Site Scripting(XSS)
 9. Cross Site Request Forgery(CSRF)
+10. SQL Injection
 
 ##1) Remote File Inclusion
 ####Affected PHP Functions
@@ -298,7 +299,7 @@ to_upper.php
 ```php
 <?php
 $string = $_GET['string'];
-print preg_replace('/(.*)/e', 'strtoupper("\\1")', $string);
+print preg_replace('/^(.*)/e', 'strtoupper(\\1)', $string);
 ?>
 ```
 #####Dynamic Variables
@@ -397,4 +398,46 @@ echo "You searched for ".$query;
 <script type="text/javascript">
 var user = '<?php echo filter_var($user_id, FILTER_VALIDATE_INT)?>';
 </script>
+```
+##9) Cross Site Request Forgery(CSRF)
+####Vulnerable Scenario
+- Missing CSRF token in post data
+- Using $_GET or $_REQUEST instead of $_POST in data update
+
+####Vulnerable Code
+update_user.php
+```php
+<?php
+$name = $_REQUEST['name'];
+$about = $_REQUEST['about'];
+$username = $_REQUEST['username'];
+// update user info
+?>
+```
+
+####Attack
+attacker.html
+```html
+<!DOCTYPE html>
+<html>
+<body>
+<img src="http://localhost/csrf/update_user.php?name=YouHaveBeenHackedByVinoth" alt="You Have Been Hacked :(" height="0" width="0"/>
+</body>
+</html>
+```
+####How to fix
+- avoid $_REQUEST and $_GET for getting post information
+- use CSRF Token for post data
+
+update_user_fixed.php
+```php
+<?php
+$name = $_POST['name'];
+$about = $_POST['about'];
+$username = $_POST['username'];
+if($_SESSION['csrf_token'] != $_POST['csrf_token']){
+	$error = 'Wrong Token';
+}
+// update user info
+?>
 ```

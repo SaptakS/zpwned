@@ -9,7 +9,6 @@
 7. Authentication Bypass/Insecure Permissions
 8. Cross-Site Scripting(XSS)
 9. Cross Site Request Forgery(CSRF)
-10. SQL Injection
 
 ##1) Remote File Inclusion
 ####Affected PHP Functions

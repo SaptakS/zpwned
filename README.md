@@ -1,4 +1,4 @@
-#Things you shouldn't do in PHP
+#Secure PHP Coding
 
 1. Remote File Inclusion (RFI)
 2. Local File Inclusion (LFI)

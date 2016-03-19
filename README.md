@@ -391,11 +391,11 @@ search_fixed.php
 ```php
 <?php
 $query = htmlspecialchars($_GET['q'], ENT_QUOTES, 'UTF-8');
-$user_id = $_GET['user_id'];
+$user_id = filter_var($_GET['user_id'], FILTER_VALIDATE_INT);
 echo "You searched for ".$query;
 ?>
 <script type="text/javascript">
-var user = '<?php echo filter_var($user_id, FILTER_VALIDATE_INT)?>';
+var user = '<?php echo $user_id?>';
 </script>
 ```
 ##9) Cross Site Request Forgery(CSRF)
@@ -435,7 +435,7 @@ $name = $_POST['name'];
 $about = $_POST['about'];
 $username = $_POST['username'];
 if($_SESSION['csrf_token'] != $_POST['csrf_token']){
-	$error = 'Wrong Token';
+	echo 'Wrong Token';
 }
 // update user info
 ?>
